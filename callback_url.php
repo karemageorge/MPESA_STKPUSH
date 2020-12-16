@@ -3,18 +3,20 @@
 
         $callbackJSONData=file_get_contents('php://input');
         $callbackData=json_decode($callbackJSONData);
-        $resultCode=$callbackData->Body->stkCallback->ResultCode;
-        $resultDesc=$callbackData->Body->stkCallback->ResultDesc;
-        $merchantRequestID=$callbackData->Body->stkCallback->MerchantRequestID;
-        $checkoutRequestID=$callbackData->Body->stkCallback->CheckoutRequestID;
+        $TransactionType=$callbackData->TransactionType;
+        $TransID=$callbackData->TransID;
+        $TransTime=$callbackData->TransTime;
+        $TransAmount=$callbackData->TransAmount;
 
-        $amount=$callbackData->Body->stkCallback->CallbackMetadata->Item[0]->Value;
-        $mpesaReceiptNumber=$callbackData->Body->stkCallback->CallbackMetadata->Item[1]->Value;
-        $balance=$callbackData->Body->stkCallback->CallbackMetadata->Item[2]->Value;
-  //   $b2CUtilityAccountAvailableFunds=$callbackData->Body->stkCallback->CallbackMetadata->Item[3]->Value;
-        $transactionDate=$callbackData->Body->stkCallback->CallbackMetadata->Item[3]->Value;
-        $phoneNumber=$callbackData->Body->stkCallback->CallbackMetadata->Item[4]->Value;
-        
+        $BusinessShortCode=$callbackData->BusinessShortCode;
+        $BillRefNumber=$callbackData->BillRefNumber;
+        $InvoiceNumber=$callbackData->InvoiceNumber;
+        $OrgAccountBalance=$callbackData->OrgAccountBalance;
+        $ThirdPartyTransID=$callbackData->ThirdPartyTransID;
+        $MSISDN=$callbackData->MSISDN;
+        $FirstName=$callbackData->FirstName;
+        $MiddleName=$callbackData->MiddleName;
+        $LastName=$callbackData->LastName;
         
     //    echo $phoneNumber;
      //   $result=[
@@ -40,7 +42,7 @@
     
 /* Attempt MySQL server connection. Assuming you are running MySQL
 server with default setting (user 'root' with no password) */
-$link = mysqli_connect("localhost", "vanguar1_mpesa", "mpesa1720!", "vanguar1_mpesa");
+$link = mysqli_connect("localhost", "vanguar1_mp", "mpesa1720!", "vanguar1_mp");
  
 // Check connection
 if($link === false){
@@ -48,16 +50,33 @@ if($link === false){
 }
  
 // Attempt insert query execution
-$sql = "INSERT INTO mpesa_pay (
-resultCode,
-resultDesc,
-merchantRequestID,
-checkoutRequestID,
-amount,
-mpesaReceiptNumber,
-balance,
-transactionDate,
-phoneNumber) VALUES ('$resultCode', '$resultDesc', '$merchantRequestID', '$checkoutRequestID', '$amount', '$mpesaReceiptNumber', '$balance','$transactionDate', '$phoneNumber' )";
+$sql = "INSERT INTO confirmation (
+TransactionType,
+TransID,
+TransTime,
+TransAmount,
+BusinessShortCode,
+BillRefNumber,
+InvoiceNumber,
+OrgAccountBalance,
+ThirdPartyTransID,
+MSISDN,
+FirstName,
+MiddleName,
+LastName
+) VALUES ('$TransactionType',
+'$TransID',
+'$TransTime',
+'$TransAmount',
+'$BusinessShortCode',
+'$BillRefNumber',
+'$InvoiceNumber',
+'$OrgAccountBalance',
+'$ThirdPartyTransID',
+'$MSISDN',
+'$FirstName',
+'$MiddleName',
+'$LastName' )";
 if(mysqli_query($link, $sql)){
     echo "Records inserted successfully.";
 } else{
